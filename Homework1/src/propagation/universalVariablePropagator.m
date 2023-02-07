@@ -13,7 +13,7 @@ v_r0 = dot(initialPos, initialVel)/posNorm;
 alpha = 2/posNorm - velNorm^2/mu; % alpha = 1/semimajorAxis (sign of alpha determines type of orbit -- Elliptical, Parabolic, Hyperbolic) % 
 
 % Solve for Universal Anomaly (and output S and C from Stumpff Functions)
-[chi, S, C] = solveUniversalAnomaly(posNorm, v_r0, timespan, alpha, mu, 1e-8); 
+[chi, S, C] = solveUniversalAnomaly(posNorm, v_r0, timespan, alpha, mu, 1e-3); 
 
 % Compute f function
 f = 1 - chi^2/posNorm * C;  

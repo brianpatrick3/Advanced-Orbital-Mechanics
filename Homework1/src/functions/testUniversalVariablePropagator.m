@@ -1,8 +1,7 @@
-%%% File Name: homework1.m 
+%%% File Name: testUniversalVariablePropagator.m
 %  Written By: Brian Patrick 
 %  Date Written: 2.6.2023 
-%  Description: This file is used to complete the assigned work for
-%               homework 1 in AE 502 - Advanced Orbital Mechanics 
+%  Description: This file is used to test the universal variable propagator 
 %  ========================================================================
 close all; clear; clc;
 
@@ -43,6 +42,9 @@ end
 epochs = 1:timespan; 
 stateKeplerian = convertCartesianToKeplerian(finalState, epochs, 1);
 
+% Find Periapsis 
+periapsisID = find(abs(stateKeplerian(6,:)) < 1e-3, 1, 'first'); 
+
 %% Plot Results
 if plotOrbit == true
     figure() 
@@ -51,9 +53,9 @@ if plotOrbit == true
     grid minor
     plot3(finalState(1,:), finalState(2,:), finalState(3,:), 'LineWidth', 1.5); 
     plot3(finalState(1,1), finalState(2,1), finalState(3,1), 'k.','LineWidth', 2, 'MarkerSize', 15)
-    plot3(finalState(1,2809), finalState(2,2809), finalState(3, 2809), 'r.', 'LineWidth', 2, 'MarkerSize', 15)
+    plot3(finalState(1,periapsisID), finalState(2,periapsisID), finalState(3, periapsisID), 'r.', 'LineWidth', 2, 'MarkerSize', 15)
     drawPlanet(Body.EARTH, [0,0,0], 1); 
-    legend('Trajectory', 'Initial State', 'Periapsis', ''
+    legend('Trajectory', 'Initial State', 'Periapsis', '')
     
     % Figure Settings 
     title(sprintf('Universal Variable Orbit Propagation'), 'Interpreter','latex') 
@@ -64,25 +66,4 @@ end
 %% Runtime 
 runtime = toc; 
 fprintf('Program Runtime %0.4f s \n', runtime)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

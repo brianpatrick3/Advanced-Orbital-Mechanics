@@ -12,39 +12,38 @@ tic;
 %% Options 
 plotOrbit = true; 
 
-%% Example 3.7 Curtis -- Universal Variable Orbit Propagator 
+%% Define Constants 
+MU = GravitationalParameter.SUN;
+LU = PhysicalConstants.ASTRONOMICAL_UNIT; 
+TU = sqrt(LU^3/MU);
+VU = LU/TU;
 
-initialPosition = [7000, -12124, 0]; 
-initialVelocity = [2.6679, 4.6210, 0]; 
-
-% Build Initial State
+%% 'Oumouamoua 
+initialPosition = [3.515868886595499e-2, -3.162046390773074, 4.493983111703389]; 
+initialVelocity = [-2.317577766980901e-3, 9.843360903693031e-3, -1.541856855538041e-2]; 
+% Build initialState 
 initialState = [initialPosition, initialVelocity]';
 
-% Define timespan 
-timespan = 3600*5; % seconds
-
-% Define Constants 
-MU = GravitationalParameter.EARTH;
-LU = CelestialBodyConstants.EARTH_RADIUS; 
-TU = sqrt(LU^3/MU);
-VU = LU/TU; 
+% Timespan 
+timespan = linspace(0, PhysicalConstants.JULIAN_YEAR*2/TU, 5000); 
 
 % Obtain state at specified epochs
-finalState = zeros(6, timespan); 
-for i = 1: timespan 
-    timespan = i;
-    finalState(:,i) = universalVariablePropagator(initialState, timespan, MU)./[LU;LU;LU;VU;VU;VU];
+trajectory = zeros(6, length(timespan)); 
+for i = 1: length(timespan)
+%     trajectory(:,i) = universalVariablePropagator(initialState, timespan(i), MU)./[LU;LU;LU;VU;VU;VU];
+    trajectory(:,i) = universalVariablePropagator(initialState, timespan(i), 1)./[LU;LU;LU;VU;VU;VU];
+
 end
 
 % % solve once
 % finalState = universalVariablePropagator(initialState, timespan, constants); 
 
 %% Convert States to Keplerian Elements 
-epochs = 1:timespan; 
-stateKeplerian = convertCartesianToKeplerian(finalState, epochs, 1);
+epochs = timespan; 
+stateKeplerian = convertCartesianToKeplerian(trajectory, epochs, 1);
 
 % Find Periapsis 
-periapsisID = find(abs(stateKeplerian(6,:)) < 1e-3, 1, 'first'); 
+% periapsisID = find(abs(stateKeplerian(6,:)) < 1e-3, 1, 'first'); 
 
 %% Plot Results
 if plotOrbit == true
@@ -52,17 +51,17 @@ if plotOrbit == true
     hold on 
     axis equal 
     grid minor
-    plot3(finalState(1,:), finalState(2,:), finalState(3,:), 'LineWidth', 1.5); 
-    plot3(finalState(1,1), finalState(2,1), finalState(3,1), 'k.','LineWidth', 2, 'MarkerSize', 15)
-    plot3(finalState(1,periapsisID), finalState(2,periapsisID), finalState(3, periapsisID), 'r.', 'LineWidth', 2, 'MarkerSize', 15)
-    drawPlanet(Body.EARTH, [0,0,0], 1); 
-    legend('Trajectory', 'Initial State', 'Periapsis', '')
+    plot3(trajectory(1,:), trajectory(2,:), trajectory(3,:), 'LineWidth', 1.5); 
+    plot3(trajectory(1,1), trajectory(2,1), trajectory(3,1), 'k.','LineWidth', 2, 'MarkerSize', 15)
+%     plot3(finalState(1,periapsisID), finalState(2,periapsisID), finalState(3, periapsisID), 'r.', 'LineWidth', 2, 'MarkerSize', 15)
+    drawPlanet(Body.SUN, [0,0,0], 1); 
+    legend('Trajectory', 'Initial State', '', '')
     
     % Figure Settings 
     title(sprintf('Universal Variable Orbit Propagation'), 'Interpreter','latex') 
-    xlabel('X Axis (Earth Radii)') 
-    ylabel('Y Axis (Earth Radii)') 
-    zlabel('Z Axis (Earth Radii)')
+    xlabel('X Axis (AU)') 
+    ylabel('Y Axis (AU)') 
+    zlabel('Z Axis (AU)')
 end 
 %% Runtime 
 runtime = toc; 
