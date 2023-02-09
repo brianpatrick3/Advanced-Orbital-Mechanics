@@ -28,11 +28,6 @@ switch asteroid
         
         % Build InitialState 
         initialState = [initialPosition, initialVelocity]';
-
-        % Timespan
-        initialEpoch = cspice_str2et('2017-Jan-01 00:00:00.0000');
-        finalEpoch = initialEpoch + PhysicalConstants.JULIAN_YEAR; 
-        timespan = linspace(initialEpoch, finalEpoch, 5000);
         
         % % Convert state to keplerian 
         stateKeplerian = convertCartesianToKeplerian(initialState, 0, MU);  
@@ -44,45 +39,44 @@ switch asteroid
         
         % Build InitialState 
         initialState = [initialPosition, initialVelocity]';
-
-        % Timespan 
-        initialEpoch = cspice_str2et('2017-Jan-01 00:00:00.0000');
-        finalEpoch = initialEpoch + PhysicalConstants.JULIAN_YEAR*3; 
-        timespan = linspace(initialEpoch, finalEpoch, 5000);
         
         % Convert state to keplerian
-        stateKeplerian = convertCartesianToKeplerian(initialState, 0, MU);
+        stateKeplerian = convertCartesianToKeplerian(initialState, 0, MU)
 %         stateKeplerian2B = rv2elm(initialPosition, initialVelocity, MU, 1e-10)'
 end
 
 %% Propagation 
 
-% % Obtain state at specified epochs
-% trajectory = zeros(6, length(timespan)); 
-% for i = 1: length(timespan)
-%     trajectory(:,i) = universalVariablePropagator(initialState, timespan(i), MU);
-% end
-% % Convert to Canonical Units
-% trajectory(1:3,:) = trajectory(1:3,:)/LU; 
+% Timespan 
+timespan = linspace(0, PhysicalConstants.JULIAN_YEAR, 5000); 
+
+% Obtain state at specified epochs
+trajectory = zeros(6, length(timespan)); 
+for i = 1: length(timespan)
+%     trajectory(:,i) = universalVariablePropagator(initialState, timespan(i), MU)./[LU;LU;LU;VU;VU;VU];
+    trajectory(:,i) = universalVariablePropagator(initialState, timespan(i), MU);
+
+end
+trajectory(1:3,:) = trajectory(1:3,:)/LU; 
 
 % % solve once
 % finalState = universalVariablePropagator(initialState, timespan, constants); 
 
 %% Propagate using ODE45
-% tspan = [0 PhysicalConstants.JULIAN_YEAR*4]; 
+% tspan = [0 PhysicalConstants.JULIAN_YEAR]; 
 % odeopts = odeset('RelTol', 1e-10, 'AbsTol', 1e-12); 
 % [time, trajectory] = ode45(@two_body_PR, tspan, initialState, odeopts, MU); 
 % trajectory = trajectory'; 
 % trajectory(1:3,:) = trajectory(1:3,:)/LU; 
 
-%% Convert Trajectory to Keplerian Elements 
+%% Convert States to Keplerian Elements 
 % epochs = timespan; 
 % stateKeplerian = convertCartesianToKeplerian(trajectory, epochs, 1);
 
 % Find Periapsis 
 % periapsisID = find(abs(stateKeplerian(6,:)) < 1e-3, 1, 'first'); 
 
-%% Plot Trajectory
+%% Plot Results
 if plotOrbit == true
     figure() 
     hold on 
@@ -92,15 +86,14 @@ if plotOrbit == true
     plot3(trajectory(1,1), trajectory(2,1), trajectory(3,1), 'k.','LineWidth', 2, 'MarkerSize', 15)
 %     plot3(finalState(1,periapsisID), finalState(2,periapsisID), finalState(3, periapsisID), 'r.', 'LineWidth', 2, 'MarkerSize', 15)
     drawPlanet(Body.SUN, [0,0,0], CelestialBodyConstants.SUN_RADIUS/LU); 
-    legend('Trajectory', 'Initial State', 'Sun')
+    legend('Trajectory', 'Initial State', '', '')
     
     % Figure Settings 
-    title(sprintf('%s Trajectory', asteroid), 'Interpreter','latex') 
+    title(sprintf('Universal Variable Orbit Propagation'), 'Interpreter','latex') 
     xlabel('X Axis (AU)') 
     ylabel('Y Axis (AU)') 
     zlabel('Z Axis (AU)')
 end 
-
 %% Runtime 
 runtime = toc; 
 fprintf('Program Runtime %0.4f s \n', runtime)
@@ -110,7 +103,9 @@ fprintf('Program Runtime %0.4f s \n', runtime)
 
 
 
-cspice_et2utc(start, 'C', 4) 
+
+
+
 
 
 
