@@ -5,9 +5,17 @@
 %              script that performs the necessary calculations/work for the
 %              assignment. 
 %  ========================================================================
-close all; clear; clc; 
+function [] = startup()
 
-addpath(genpath('C:\Users\brian\Desktop\Github\Advanced-Orbital-Mechanics-\Homework1')); 
+% Get current path
+currentPath = fileparts(mfilename('fullpath'));
+
+% Add folders to search path
+addpath(genpath(fullfile(currentPath, '..', 'external', 'mice')))
+addpath(genpath(fullfile(currentPath, '..', 'src')))
+
+end
+
 
 
 
