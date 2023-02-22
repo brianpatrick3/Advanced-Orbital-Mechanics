@@ -32,6 +32,6 @@ position = initialPos*f + initialVel*g;
 velocity = initialPos*fdot + initialVel*gdot; 
 
 % Build finalState
-finalState = [position; velocity]; 
+finalState = [position, velocity]; 
 
 end
