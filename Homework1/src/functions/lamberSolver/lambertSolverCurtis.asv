@@ -56,13 +56,11 @@ function [v1, v2, exit] = lambertSolverCurtis(initialPosition, finalPosition, ti
     
     % Initialize newtonMethod 
     initialGuess = 0; % From Curtis pg. 207
-    eval = 0; 
     tolerance = 1e-10;
 
     % Compute Better Initial Guess 
-    while eval <= 0 
-        initialGuess = initialGuess + 0.1;
-        eval = evaluateF(initialGuess,r1mag, r2mag, A,dt,mu);
+    while F(z, mu) < 0 
+        z = z + 0.1; 
     end
 
     % Compute z using newtonMethod

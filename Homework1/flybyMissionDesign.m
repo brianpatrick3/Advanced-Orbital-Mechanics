@@ -25,7 +25,7 @@ initialEarthVelocity = [-1.720038360888334e-2, -3.211186197806460e-3, 7.92773673
 initialEarthState = [initialEarthPosition, initialEarthVelocity]; 
 
 %% Options 
-asteroid = 'Borisov'; 
+asteroid = 'Oumuamua'; 
 transferType = 'prograde'; 
 
 %% Choose Asteroid Case
@@ -126,7 +126,7 @@ end
 % Filter out DV's for Flyby 
 idx = find(DV_flyby > 20); 
 DV_flyby(idx) = NaN;
-
+% 
 % Filter out DV's for Rendezvous
 if strcmpi(asteroid, 'Oumuamua')
     iidx = find(DV_rendezvous > 50);
@@ -143,7 +143,7 @@ arrivalTimes = arrivalTimes + waitTime;
 
 figure(1)
 surf(departureTimes, arrivalTimes, DV_flyby, 'EdgeColor', 'interp', 'FaceColor','interp')
-title(sprintf('%s %s Flyby', asteroid, transferType))
+title(sprintf('%s Flyby', asteroid))
 colormap('jet')
 cb = colorbar; 
 title(cb,'\DeltaV (km/s)', 'Fontweight', 'bold')
@@ -155,7 +155,7 @@ view([0 90])
 % Plot Rendezvous
 figure(2)
 surf(departureTimes, arrivalTimes, DV_rendezvous, 'EdgeColor', 'interp', 'FaceColor','interp')
-title(sprintf(' %s %s Rendezvous', asteroid, transferType))
+title(sprintf(' %s Rendezvous', asteroid))
 colormap('jet')
 cb = colorbar; 
 title(cb,'\DeltaV (km/s)', 'Fontweight', 'bold')

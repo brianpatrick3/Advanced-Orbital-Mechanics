@@ -13,7 +13,7 @@ tic;
 furnsh_c(Ephemeris.DE440S, Ephemeris.NAIF0012); 
 
 %% Options 
-asteroid = 'Oumuamua'; 
+asteroid = 'Borisov'; 
 plotOrbit = true;
 
 %% Define Constants 
@@ -50,7 +50,7 @@ switch asteroid
         initialState = [initialPosition, initialVelocity]';
 
         % Timespan 
-        initialEpochET = cspice_str2et('2017-Jan-01 00:00:00.0000');
+        initialEpochET = str2et_c('2017-Jan-01 00:00:00.0000');
         initialEpoch = 0; 
         finalEpoch = initialEpoch + PhysicalConstants.JULIAN_YEAR*5; 
         timespan = linspace(initialEpoch, finalEpoch, 5000);
