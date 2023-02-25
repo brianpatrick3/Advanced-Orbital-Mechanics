@@ -11,6 +11,7 @@ function [] = startup()
 currentPath = fileparts(mfilename('fullpath'));
 
 % Add folders to search path
+addpath(genpath(fullfile(currentPath, '..', '..', 'Homework1')))
 addpath(genpath(fullfile(currentPath, '..', 'external', 'mice')))
 addpath(genpath(fullfile(currentPath, '..', 'src')))
 
