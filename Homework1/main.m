@@ -30,7 +30,7 @@ switch asteroid
         initialVelocity = [-2.317577766980901e-3, 9.843360903693031e-3, -1.541856855538041e-2]*LU/86400; 
         
         % Build InitialState 
-        initialState = [initialPosition, initialVelocity]';
+        initialState = [initialPosition, initialVelocity];
 
         % Timespan
         initialEpochET = str2et_c('2017-Jan-01 00:00:00.0000'); %%% SOMETHING GOING ON WITH THE PROPAGATION WHEN USING THE ET FOR THE INITIAL EPOCH
@@ -39,7 +39,7 @@ switch asteroid
         timespan = linspace(initialEpoch, finalEpoch, 5000);
         
         % % Convert state to keplerian 
-        stateKeplerian = convertCartesianToKeplerian(initialState, 0, MU);  
+        stateKeplerian = convertCartesianToKeplerian(initialState', 0, MU);  
         % stateKeplerian = rv2elm(initialPosition, initialVelocity, MU, 1e-10)'
 
     case 'Borisov'
@@ -47,7 +47,7 @@ switch asteroid
         initialVelocity = [-8.241709369476881e-3, -1.156219024581502e-2, -1.317135977481448e-2]*LU/86400; 
         
         % Build InitialState 
-        initialState = [initialPosition, initialVelocity]';
+        initialState = [initialPosition, initialVelocity];
 
         % Timespan 
         initialEpochET = str2et_c('2017-Jan-01 00:00:00.0000');
@@ -56,7 +56,7 @@ switch asteroid
         timespan = linspace(initialEpoch, finalEpoch, 5000);
         
         % Convert state to keplerian
-        stateKeplerian = convertCartesianToKeplerian(initialState, 0, MU);
+        stateKeplerian = convertCartesianToKeplerian(initialState', 0, MU);
 end
 
 %% Propagation 
@@ -89,17 +89,20 @@ if plotOrbit == true
     hold on 
     axis equal 
     grid minor
-    plot3(trajectory(1,:), trajectory(2,:), trajectory(3,:), 'LineWidth', 1.5); % Plot Asteroid Trajectory 
-    plot3(trajectory(1,1), trajectory(2,1), trajectory(3,1), 'k.','LineWidth', 2, 'MarkerSize', 15) % Plot Initial State
-    plot3(trajectory(1,periapsisID), trajectory(2,periapsisID), trajectory(3, periapsisID), 'm^', 'LineWidth', 2, 'MarkerSize', 8) % Plot Closest Approach 
-    drawPlanet(Body.SUN, [0,0,0], CelestialBodyConstants.SUN_RADIUS/LU); % Plot Sun 
-    legend('Trajectory', 'Initial State','Closest Approach', 'Sun' )
+    plot3(trajectory(1,:), trajectory(2,:), trajectory(3,:), 'LineWidth', 3); % Plot Asteroid Trajectory 
+    plot3(trajectory(1,1), trajectory(2,1), trajectory(3,1), 'k.','LineWidth', 3, 'MarkerSize', 20) % Plot Initial State
+%     plot3(trajectory(1,periapsisID), trajectory(2,periapsisID), trajectory(3, periapsisID), 'm^', 'LineWidth', 2, 'MarkerSize', 8) % Plot Closest Approach 
+    plot3(0, 0, 0, 'r.', 'MarkerSize', 15, 'LineWidth', 3)
+%     drawPlanet(Body.SUN, [0,0,0], CelestialBodyConstants.SUN_RADIUS/LU); % Plot Sun 
+%     legend('Trajectory', 'Initial State','Closest Approach', 'Sun' )
+    legend(sprintf('%s Trajectory', asteroid), 'Initial State', 'Sun (not to scale)')
     
     % Figure Settings 
     title(sprintf('%s Trajectory', asteroid), 'Interpreter','latex') 
     xlabel('X Axis (AU)') 
     ylabel('Y Axis (AU)') 
     zlabel('Z Axis (AU)')
+    set(findall(gca, '-Property', 'FontSize'), 'FontSize', 18)
 end 
 
 %% Runtime 

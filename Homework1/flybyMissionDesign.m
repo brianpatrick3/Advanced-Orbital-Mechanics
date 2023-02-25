@@ -151,6 +151,7 @@ title(cb,'\DeltaV (km/s)', 'Fontweight', 'bold')
 xlabel('Departure', 'FontWeight','bold')
 ylabel('Time of Flight (days)', 'FontWeight','bold')
 view([0 90])
+set(findall(gca, '-Property', 'Fontsize'), 'Fontsize', 18)
 
 % Plot Rendezvous
 figure(2)
@@ -163,7 +164,7 @@ title(cb,'\DeltaV (km/s)', 'Fontweight', 'bold')
 xlabel('Departure', 'FontWeight','bold')
 ylabel('Time of Flight (days)', 'FontWeight','bold')
 view([0 90])
-
+set(findall(gca, '-Property', 'Fontsize'), 'Fontsize', 18)
 
 %% Output Runtime 
 runtime = toc; 

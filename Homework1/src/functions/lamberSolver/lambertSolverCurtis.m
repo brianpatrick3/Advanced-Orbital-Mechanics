@@ -57,13 +57,35 @@ function [v1, v2, exit] = lambertSolverCurtis(initialPosition, finalPosition, ti
     % Initialize newtonMethod 
     initialGuess = 0; % From Curtis pg. 207
     eval = 0; 
-    tolerance = 1e-10;
+    tolerance = 1e-10; 
 
     % Compute Better Initial Guess 
     while eval <= 0 
-        initialGuess = initialGuess + 0.1;
         eval = evaluateF(initialGuess,r1mag, r2mag, A,dt,mu);
+        initialGuess = initialGuess + 0.1;
     end
+
+%% REMOVE AFTER USE
+% z = 0:.00001:10; 
+% for i = 1:length(z) 
+%     eval(i) = evaluateF(z(i), r1mag, r2mag, A, dt, mu); 
+% end
+% 
+% xx = sign(eval); 
+% idx = find(xx == 1, 1, 'first');
+% 
+% figure()
+% hold on 
+% grid minor 
+% plot(z, eval, 'LineWidth', 2) 
+% plot(z(idx),eval(idx), 'k.', 'MarkerSize',40, 'LineWidth', 2) 
+% plot([min(xlim()),max(xlim())],[0,0], 'k--', 'LineWidth', 1.2)
+% xlabel('z', Interpreter='latex') 
+% ylabel('F(z)', Interpreter='latex')
+% set(findall(gca, '-property', 'fontsize'), 'fontsize', 16)
+
+
+%%
 
     % Compute z using newtonMethod
     [z, y, C, S, exit] = newtonMethod(A, dt, mu, r1mag, r2mag, initialGuess, tolerance);
