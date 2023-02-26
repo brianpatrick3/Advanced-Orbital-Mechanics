@@ -1,4 +1,4 @@
-%%% File Name: flybyMissionDesign.m 
+%%% File Name: missionDesign.m 
 % Written By: Brian Patrick 
 % Date Written: 2.19.2023 
 % Description: This file will be used to compute the DV's and pork chop
@@ -116,9 +116,7 @@ for i = 1: length(departureTimes)
         DV_rendezvous(j,i) = norm(v1 - earthState(i,4:6)) + norm(asteroidState(j,4:6) - v2);
         DV_flyby(j,i) = norm(v1 - earthState(i,4:6)); 
         exitList(j,i) = exit; 
-
     end
-
 end
 
 %% Filter Data 
@@ -139,7 +137,6 @@ DV_rendezvous(iidx) = NaN;
 
 % Convert Data for Plotting 
 departureTimes = departureTimes + initialDeparture;
-arrivalTimes = arrivalTimes + waitTime;
 
 figure(1)
 surf(departureTimes, arrivalTimes, DV_flyby, 'EdgeColor', 'interp', 'FaceColor','interp')
@@ -149,7 +146,7 @@ cb = colorbar;
 title(cb,'\DeltaV (km/s)', 'Fontweight', 'bold')
 
 xlabel('Departure', 'FontWeight','bold')
-ylabel('Time of Flight (days)', 'FontWeight','bold')
+ylabel('Arrival (days past 2017-Aug-01)', 'FontWeight','bold')
 view([0 90])
 set(findall(gca, '-Property', 'Fontsize'), 'Fontsize', 18)
 
@@ -162,18 +159,12 @@ cb = colorbar;
 title(cb,'\DeltaV (km/s)', 'Fontweight', 'bold')
 
 xlabel('Departure', 'FontWeight','bold')
-ylabel('Time of Flight (days)', 'FontWeight','bold')
+ylabel('Arrival (days past 2019-Jun-01)', 'FontWeight','bold')
 view([0 90])
 set(findall(gca, '-Property', 'Fontsize'), 'Fontsize', 18)
 
 %% Output Runtime 
 runtime = toc; 
 fprintf('Program Runtime: %f s \n', runtime)
-
-
-
-
-
- 
 
 
