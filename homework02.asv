@@ -33,14 +33,12 @@ n = sqrt(MU/SMA^3);
 % Find roots of equation Symbollicaly
 syms x 
 perigeeRateOfChange = 3/4*n*J2*(LU/SMA)^2*((5*(cos(x))^2 - 1)/(1-eccentricity^2)^2); 
-[roots, parameters, conditions] = solve(perigeeRateOfChange == 0, x, "PrincipalValue",false, 'ReturnConditions',true)
-k = [0 1 2]; solx = eval(roots);
+[roots, parameters, conditions] = solve(perigeeRateOfChange == 0, x, "PrincipalValue",false, 'ReturnConditions',true);
+k = [0 1 2]; roots = eval(roots);
 idx = [find(temp<0), find(temp>2*pi)];
-roots(idx) = []
-
-
-% Roots of the equation for rate of change of the Argument of Perigee 
-roots = [acos(sqrt(1/5)), acos(-sqrt(1/5))]; 
+% Roots of the rate of change equation for the Argument of Perigee between 0 and 2pi
+roots(idx) = []; 
+% Choose first root
 i = roots(1);
 
 % Compute the rates of change
