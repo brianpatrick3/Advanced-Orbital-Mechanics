@@ -13,7 +13,7 @@ tic
 
 % Options 
 solveEarthMolniyaOrbit = true; 
-solveMarsMolniyaOrbit = false; 
+solveMarsMolniyaOrbit = true; 
 analyzeMolniyaOrbitalElements = false; 
 
 % Constants
@@ -54,7 +54,35 @@ if solveEarthMolniyaOrbit == true
     inclination = rad2deg(i); 
 
     % Output Orbital Parameters for Molniya Orbit 
-    sprintf('Molniya Orbit Parameters: \n a = %f (km) \n e = %f \n i = %.4f (deg) \n Nodal Drift Rate = %s (rad/s)', SMA, eccentricity, inclination, num2str(nodalRateOfChange))    
+    sprintf('Molniya Orbit Parameters: \n a = %f (km) \n e = %f \n i = %.4f (deg) \n Nodal Drift Rate = %s (rad/s)', SMA, eccentricity, inclination, num2str(nodalRateOfChange))  
+
+    % Propagate Earth Molniya Orbit 
+    w = 0; RAAN = 0; f = 0; 
+    stateKeplerian = [SMA, eccentricity, i, RAAN, w, f]'; 
+    stateCartesian = convertKeplerianToCartesian(stateKeplerian, 0, MU);
+    timespan = [0 P*1.05]; 
+
+    % Propagate State
+    odeopts = odeset('RelTol', 1e-10, 'AbsTol', 1e-12);
+    [time, trajCartesian] = ode89(@twoBodyJ2, timespan, stateCartesian, odeopts, MU, LU, J2);
+    trajCartesian = trajCartesian'; 
+
+    % Plot Trajectory 
+    fig1 = figure();
+    hold on 
+    axis equal 
+    grid minor
+    plot3(trajCartesian(1,:)/LU, trajCartesian(2,:)/LU, trajCartesian(3,:)/LU, 'b-', 'LineWidth', 1.2)
+    drawPlanet(Body.EARTH, [0 0 0], 1); 
+    
+    % Axis Settings
+    xlabel('X Axis (Earth Radii)') 
+    ylabel('Y Axis (Earth Radii)') 
+    zlabel('Z Axis (Earth Radii)') 
+    title(sprintf('Perturbed Molniya Orbit'), Interpreter="latex")
+    set(findall(gca, '-Property', 'FontSize'), 'FontSize', 16)
+
+
 end 
 
 %% Question 2 
@@ -88,6 +116,32 @@ if solveMarsMolniyaOrbit == true
     
     % Output Orbital Parameters for Molniya Orbit 
     sprintf('Molniya Orbit Parameters: \n a = %f (km) \n e = %f \n i = %.4f (deg) \n Nodal Drift Rate = %s (rad/s)', SMA, eccentricity, inclination, num2str(nodalRateOfChange))
+
+    % Propagate Earth Molniya Orbit 
+    w = 0; RAAN = 0; f = 0; 
+    stateKeplerian = [SMA, eccentricity, i, RAAN, w, f]'; 
+    stateCartesian = convertKeplerianToCartesian(stateKeplerian, 0, MU);
+    timespan = [0 P*1.05]; 
+
+    % Propagate State
+    odeopts = odeset('RelTol', 1e-10, 'AbsTol', 1e-12);
+    [time, trajCartesian] = ode89(@twoBodyJ2, timespan, stateCartesian, odeopts, MU, LU, J2);
+    trajCartesian = trajCartesian'; 
+
+    % Plot Trajectory 
+    fig1 = figure();
+    hold on 
+    axis equal 
+    grid minor
+    plot3(trajCartesian(1,:)/LU, trajCartesian(2,:)/LU, trajCartesian(3,:)/LU, 'b-', 'LineWidth', 1.2)
+    drawPlanet(Body.MARS, [0 0 0], 1); 
+    
+    % Axis Settings
+    xlabel('X Axis (Mars Radii)') 
+    ylabel('Y Axis (Mars Radii)') 
+    zlabel('Z Axis (Mars Radii)') 
+    title(sprintf('Perturbed Molniya Orbit'), Interpreter="latex")
+    set(findall(gca, '-Property', 'FontSize'), 'FontSize', 16)
 end
 
 %% Question 3
