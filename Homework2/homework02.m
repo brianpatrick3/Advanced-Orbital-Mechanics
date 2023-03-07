@@ -218,7 +218,3 @@ function [eccentricAnomaly, counter, exit] = solveEccentricAnomaly(initialGuess,
 end
 
 
-
-
-
-
