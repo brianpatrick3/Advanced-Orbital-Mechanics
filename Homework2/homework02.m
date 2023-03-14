@@ -12,9 +12,9 @@ tic
 %% Setup 
 
 % Options 
-solveEarthMolniyaOrbit = true; 
-solveMarsMolniyaOrbit = true; 
-analyzeMolniyaOrbitalElements = false; 
+solveEarthMolniyaOrbit = false; 
+solveMarsMolniyaOrbit = false; 
+analyzeMolniyaOrbitalElements = true; 
 
 % Constants
 MU = GravitationalParameter.EARTH; 
@@ -149,7 +149,7 @@ if analyzeMolniyaOrbitalElements == true
        % Orbital Parameters 
     a = 26600; 
     e = 0.74; 
-    i = 1.10544;
+    i = 1.10654;
     w = deg2rad(5); 
     RAAN = deg2rad(90); 
     M = deg2rad(10); 
@@ -158,7 +158,7 @@ if analyzeMolniyaOrbitalElements == true
     [eccentricAnomaly, counter, exit] = solveEccentricAnomaly(M, e, M, 1e-10); 
     
     % Solve True Anomaly 
-    trueAnomaly = 2*tanh(sqrt((1-e)/(1+e))*tan(eccentricAnomaly/2)); 
+    trueAnomaly = 2*atan(sqrt((1+e)/(1-e))*tan(eccentricAnomaly/2)); 
     
     % Build Orbital Elements 
     stateKeplerian = [a, e, i, RAAN, w, trueAnomaly]'; 
@@ -184,7 +184,7 @@ if analyzeMolniyaOrbitalElements == true
     
     % Unpack Elements 
     [a, e, i, RAAN, w, f] = deal(trajKeplerian(1,:), trajKeplerian(2,:), trajKeplerian(3,:), trajKeplerian(4,:), trajKeplerian(5,:), trajKeplerian(6,:)); 
-    
+
     %% Plot Results 
     
     % Plot Orbital Elements 
@@ -212,7 +212,7 @@ if analyzeMolniyaOrbitalElements == true
     grid minor 
     xlabel(fig2, 'Time (Days)', 'FontSize', 18);
     title(fig2, sprintf('Variation of Molniya Orbital Elements'),'FontSize', 18, Interpreter="latex")
-    set(findobj(gcf, 'type', 'axes'), 'FontSize', 18)
+    set(findobj(gcf, 'type', 'axes'), 'FontSize', 14)
     
     % Plot Trajectory 
     fig1 = figure();
