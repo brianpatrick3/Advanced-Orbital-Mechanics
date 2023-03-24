@@ -31,7 +31,8 @@ function [stateKeplerian] = convertCartesianToKeplerian(stateCartesian, epochs, 
     % Check quadrant for correct sign of true anomaly 
     Phi = acosd(dot(position(:,i), velocity(:,i))/(positionMagnitude(i)*velocityMagnitude(i)));
     if Phi > 90 
-        trueAnomaly = trueAnomaly*(-1); 
+%         trueAnomaly = trueAnomaly*(-1); 
+          trueAnomaly = trueAnomaly + pi; 
     end 
 
     % Combine keplerian state vector 

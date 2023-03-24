@@ -14,7 +14,8 @@ tic
 % Options 
 solveEarthMolniyaOrbit = false; 
 solveMarsMolniyaOrbit = false; 
-analyzeMolniyaOrbitalElements = true; 
+analyzeMolniyaOrbitalElements = true;
+studyDriftRate = false; 
 
 % Constants
 MU = GravitationalParameter.EARTH; 
@@ -82,7 +83,6 @@ if solveEarthMolniyaOrbit == true
     title(sprintf('Perturbed Molniya Orbit'), Interpreter="latex")
     set(findall(gca, '-Property', 'FontSize'), 'FontSize', 16)
 
-
 end 
 
 %% Question 2 
@@ -105,7 +105,7 @@ if solveMarsMolniyaOrbit == true
     
     % Roots of the equation for rate of change of the Argument of Perigee 
     roots = [acos(sqrt(1/5)), acos(-sqrt(1/5))]; 
-    i = roots(1);
+    i = roots(2);
     
     % Compute the rates of change
     perigeeRateOfChange = 3/4*n*J2*(LU/SMA)^2*((5*(cos(i))^2 - 1)/(1-eccentricity^2)^2);
@@ -150,6 +150,7 @@ if analyzeMolniyaOrbitalElements == true
     a = 26600; 
     e = 0.74; 
     i = 1.10654;
+%     i = acos(-sqrt(1/5)); 
     w = deg2rad(5); 
     RAAN = deg2rad(90); 
     M = deg2rad(10); 
@@ -212,7 +213,7 @@ if analyzeMolniyaOrbitalElements == true
     grid minor 
     xlabel(fig2, 'Time (Days)', 'FontSize', 18);
     title(fig2, sprintf('Variation of Molniya Orbital Elements'),'FontSize', 18, Interpreter="latex")
-    set(findobj(gcf, 'type', 'axes'), 'FontSize', 14)
+    set(findobj(gcf, 'type', 'axes'), 'FontSize', 18)
     
     % Plot Trajectory 
     fig1 = figure();
@@ -223,52 +224,46 @@ if analyzeMolniyaOrbitalElements == true
     drawPlanet(Body.EARTH, [0 0 0], 1); 
     
     % Axis Settings
-    xlabel('X Axis (km)') 
-    ylabel('Y Axis (km)') 
-    zlabel('Z Axis (km)') 
+    xlabel('X Axis (Earth Radii)') 
+    ylabel('Y Axis (Earth Radii)') 
+    zlabel('Z Axis (Earth Radii)') 
     title(sprintf('Perturbed Molniya Orbit'), Interpreter="latex")
-    set(findall(gca, '-Property', 'FontSize'), 'FontSize', 16)
+    set(findall(gca, '-Property', 'FontSize'), 'FontSize', 18)
+
 end
+
+%% Numerical Study of Drift Rate (RAAN) 
+if studyDriftRate == true
+% Compute SMA knowing that P must be 1/3 day
+    P = PhysicalConstants.JULIAN_DAY/3; 
+    SMA = ((P/2/pi)^2 * MU)^(1/3);
+
+    % Compute Mean Motion 
+    n = sqrt(MU/SMA^3);
+
+    % Assign inclination
+    i = acos(-sqrt(1/5)); 
+
+    % Create range of eccentricity values 
+    eccentricity = linspace(0,1,1000); 
+
+    % Compute the rates of change
+    for j = 1:length(eccentricity)
+    nodalRateOfChange(j) = -3/2*n*J2*(LU/SMA)^2*(cos(i)/(1-eccentricity(j)^2)^2);
+    end 
+    
+    figure() 
+    hold on 
+    grid minor 
+    axis padded 
+    plot(eccentricity, nodalRateOfChange, 'LineWidth', 1.5)
+    set(findall(gcf,'-property', 'fontsize'), 'fontsize', 16)
+    xlabel('Eccentricity')
+    ylabel('RAAN Drift Rate (rad/s)')
+
+end 
 
 %% Display Program Runtime 
 runtime = toc; 
 fprintf('\n Program Runtime: %.2f (seconds) \n', runtime)
-
-%% Helper Functions
-function [eccentricAnomaly, counter, exit] = solveEccentricAnomaly(initialGuess, eccentricity, meanAnomaly, tolerance)
-    
-    % Initialize Loop 
-    counter = 1;
-    done = false;
-    exit = 0; 
-    E = initialGuess; 
-    e = eccentricity; 
-    M = meanAnomaly;
-    while ~ done 
-        
-        % Find Roots of Keplers Equation 
-        g = E - e*sin(E) - M;
-        dG = 1-e*cos(E); 
-                
-        % Compute Ratio
-        ratio = g/dG;  
-        
-        % Update Eccentric Anomaly
-        E = E - ratio; 
-        
-        % Check if done
-        done = abs(ratio) < tolerance;
-        counter = counter + 1;
-        
-        % Break loop if no convergence 
-        if counter > 1000
-            exit = 1; 
-            break 
-        end 
-    end 
-
-    % Assign output 
-    eccentricAnomaly = E;
-end
-
 
