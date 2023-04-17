@@ -31,7 +31,7 @@ h = 0;
 initialState = [L,G,H,l,g,h]'; 
 
 % Define timespan 
-tspan = linspace(0,100, 1000); 
+tspan = linspace(0,100, 100000); 
 
 %% Propagate state 
 odeopts = odeset(RelTol= 1e-10, AbsTol= 1e-12); 
